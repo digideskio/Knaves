@@ -7,7 +7,7 @@ http://knaves.meteor.com
 Knave's Canvas is based around two ideas:
 
 1. Card games consist of distinct "zones" for cards to occupy
-2. Card games have discrte events, moving or transforming cards
+2. Card games have discrete events which move or transform cards
 
 The playing area of any card game can be prepared by creating Zones. Each Zone is configured with a Layout that determines how the cards are arranged inside it.
 
