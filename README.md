@@ -7,4 +7,4 @@ http://knaves.meteor.com
 Meteor https://www.meteor.com
 
 ## Running
-```meteor```
+``` meteor ```
