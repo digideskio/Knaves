@@ -1,1 +1,0 @@
-sudo meteor deploy http://knaves.meteor.com/ --debug
