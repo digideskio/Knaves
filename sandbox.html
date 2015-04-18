@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script type="text/javascript" src="knaves.js"></script>
+    <script type="text/javascript" src="knavesevents.js"></script>
+    <script type="text/javascript" src="cardutils/cardutils.js"></script>
+    <script type="text/javascript" src="cardutils/playingcards/playingcards.js"></script>
+
+    <script type="text/javascript">
+
+        window.addEventListener('DOMContentLoaded', function(e) {
+            console.log('Document loaded');
+
+            // This is just a dummy function for now
+            var createCardView = function(card) {
+                var div = document.createElement('div');
+                div.innerHTML = card.name;
+
+                return div;
+            };
+
+            var knavesUI = new KnavesUI(document.getElementById('canvas'), createCardView);
+            knavesUI.createZone('someZone');
+
+            knavesUI.processEvent(new knavesevents.CardEnterPlayEvent({name: 'Some card', id: 1}, 1, 'someZone'));
+            knavesUI.processEvent(new knavesevents.CardEnterPlayEvent({name: 'Another card', id: 2}, 2, 'someZone'));
+            knavesUI.processEvent(new knavesevents.CardEnterPlayEvent({name: 'The worst card', id: 3}, 3, 'someZone'));
+            knavesUI.processEvent(new knavesevents.CardEnterPlayEvent({name: 'Teh best card evar!!1!', id: 4}, 4, 'someZone'));
+        });
+
+    </script>
+</head>
+<body>
+    <div id="canvas"></div>
+</body>
+</html>
