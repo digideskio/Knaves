@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="css/playingcards.css" />
     <link rel="stylesheet" href="css/knaves-cards.css" />
 
-    <script type="text/javascript" src="lib/jquery.js"></script>
-    <script type="text/javascript" src="lib/jquery-ui.min.js"></script>
-
     <script type="text/javascript" src="knaves.js"></script>
     <script type="text/javascript" src="knavesevents.js"></script>
     <script type="text/javascript" src="zones.js"></script>
@@ -41,7 +38,7 @@
 
             var knavesUI = new KnavesUI(document.getElementById('canvas'), cardDimensions, createCardView, createZoneView);
             knavesUI.createZone('zoneA', new zones.HorizontalTight(0, 0));
-            knavesUI.createZone('zoneB', new zones.Horizontal(0, 150));
+            knavesUI.createZone('zoneB', new zones.Horizontal(0, 230));
 
             var deck = playingcards.buildDeck();
             cardUtils.shuffle(deck);

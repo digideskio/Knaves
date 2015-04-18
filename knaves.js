@@ -20,7 +20,7 @@ KnavesUI = function(canvasElement, cardDimensions, cardViewFactory, zoneViewFact
     this.zoneViewFactory = zoneViewFactory;
 
     /**
-     * A map from card ids to the card's visual element
+     * A map from card ids to the card's view-model
      */
     this.cardViews = {};
 
@@ -40,17 +40,22 @@ KnavesUI.prototype.createZone = function(zoneElementId, zone) {
     this.zones[zoneElementId] = zone;
 
     zoneElement.style.position = 'absolute';
-    zoneElement.style.width = this.cardDimensions.width + 'px';
-    zoneElement.style.height = this.cardDimensions.height + 'px';
+    zone.performLayout();
     DOMUtils.addTransform(zoneElement, 'translate(' + zone.x + 'px, ' + zone.y + 'px)');
 
     this.canvasElement.appendChild(zoneElement);
 };
 
 KnavesUI.prototype.createCardView = function(cardId, card) {
-    var cardView = this.cardViewFactory(card);
-    cardView.className += ' knaves-card';
-    cardView.style.position = 'absolute';
+    var cardElement = this.cardViewFactory(card);
+    cardElement.className += ' knaves-card';
+    cardElement.style.position = 'absolute';
+
+    var cardView = {
+        faceDown: false,
+        tapped: false,
+        element: cardElement
+    };
 
     this.cardViews[cardId] = cardView;
     return cardView;
@@ -77,7 +82,7 @@ KnavesUI.prototype.enterPlay = function(enterPlay) {
     var cardView = this.createCardView(enterPlay.cardId, enterPlay.card);
 
     // This element enters the canvas
-    this.canvasElement.appendChild(cardView);
+    this.canvasElement.appendChild(cardView.element);
 
     // Put the card in the appropriate zone of play
     var zone = this.zones[enterPlay.zoneId];
