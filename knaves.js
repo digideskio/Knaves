@@ -39,6 +39,7 @@ KnavesUI.prototype.createZone = function(zoneElementId, zone) {
 
 KnavesUI.prototype.createCardView = function(cardId, card) {
     var cardView = this.cardViewFactory(card);
+    cardView.className += ' knaves-card';
     cardView.style.position = 'absolute';
 
     this.cardViews[cardId] = cardView;

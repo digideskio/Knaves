@@ -8,6 +8,7 @@ var performLayout = function() {
         var transform = 'translate('
             + (position.x + this.x)+ 'px, '
             + (position.y + this.y) + 'px)';
+
         DOMUtils.addTransform(cardElement, transform);
     }
 };
@@ -58,3 +59,15 @@ zones.HorizontalTight.prototype.getPosition = getPosition;
 zones.HorizontalTight.prototype.performLayout = performLayout;
 zones.HorizontalTight.prototype.addCardElement = addCardElement;
 zones.HorizontalTight.prototype.removeCardElement = removeCardElement;
+
+zones.Pile = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.children = new Array();
+    this.xSpacing = 0;
+    this.ySpacing = 0;
+};
+zones.Pile.prototype.getPosition = getPosition;
+zones.Pile.prototype.performLayout = performLayout;
+zones.Pile.prototype.addCardElement = addCardElement;
+zones.Pile.prototype.removeCardElement = removeCardElement;
