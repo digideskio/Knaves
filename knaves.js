@@ -25,10 +25,10 @@ KnavesUI = function(canvasElement, cardDimensions, cardViewFactory) {
     this.zones = {};
 };
 
-KnavesUI.prototype.createZone = function(zoneElementId, zone, x, y) {
+KnavesUI.prototype.createZone = function(zoneElementId, zone) {
     var zoneElement = document.createElement("div");
     zoneElement.style.position = 'absolute';
-    DOMUtils.addTransform(zoneElement, 'translate(' + x + 'px, ' + y + 'px)');
+    DOMUtils.addTransform(zoneElement, 'translate(' + zone.x + 'px, ' + zone.y + 'px)');
     zoneElement.id = zoneElementId;
 
     zone.element = zoneElement;
@@ -45,21 +45,45 @@ KnavesUI.prototype.createCardView = function(cardId, card) {
     return cardView;
 };
 
+KnavesUI.prototype.getCardView = function(cardId) {
+    return this.cardViews[cardId];
+};
+
 KnavesUI.prototype.processEvent = function(event) {
     if (event.type === 'CARD_ENTER_PLAY') {
         this.enterPlay(event);
+    } else if (event.type === 'CARD_CHANGE_ZONES') {
+        this.changeZones(event);
     } else {
         console.log('KnavesUI processing an unknown event type');
     }
 };
 
 KnavesUI.prototype.enterPlay = function(enterPlay) {
-    console.log('A card enters play: ' + enterPlay.cardId + ' in zone ' + enterPlay.zoneId);
+    console.log(enterPlay.cardId + ' enters play in zone ' + enterPlay.zoneId);
 
     // Create a UI element for this card
     var cardView = this.createCardView(enterPlay.cardId, enterPlay.card);
+
+    // This element enters the canvas
+    this.canvasElement.appendChild(cardView);
 
     // Put the card in the appropriate zone of play
     var zone = this.zones[enterPlay.zoneId];
     zone.addCardElement(cardView);
 };
+
+KnavesUI.prototype.changeZones = function(change) {
+    console.log(change.cardId + ' moves from ' + change.fromZoneId + ' to ' + change.toZoneId);
+
+    // Find the view associated with this card id
+    var cardView = this.getCardView(change.cardId);
+
+    // Remove it from the old zone
+    var oldZone = this.zones[change.fromZoneId];
+    oldZone.removeCardElement(cardView);
+
+    // add it to the new zone
+    var newZone = this.zones[change.toZoneId];
+    newZone.addCardElement(cardView);
+}

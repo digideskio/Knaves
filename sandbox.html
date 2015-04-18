@@ -30,19 +30,22 @@
             var cardDimensions = {width: 100, height: 180};
 
             var knavesUI = new KnavesUI(document.getElementById('canvas'), cardDimensions, createCardView);
-            knavesUI.createZone('zoneA', new zones.HorizontalTight(), 0, 0);
-            knavesUI.createZone('zoneB', new zones.HorizontalTight(), 0, 150);
+            knavesUI.createZone('zoneA', new zones.HorizontalTight(0, 0));
+            knavesUI.createZone('zoneB', new zones.Horizontal(0, 150));
 
             var deck = playingcards.buildDeck();
             cardUtils.shuffle(deck);
 
+            var hand = new Array();
+
             for (var i = 0; i<7; ++i) {
                 var card = deck.pop();
+                hand.push(card);
                 knavesUI.processEvent(new knavesevents.CardEnterPlayEvent(card, card.toString(), 'zoneA'));
             }
             for (var i = 0; i<3; ++i) {
-                var card = deck.pop();
-                knavesUI.processEvent(new knavesevents.CardEnterPlayEvent(card, card.toString(), 'zoneB'));
+                var card = hand.pop();
+                knavesUI.processEvent(new knavesevents.CardChangeZones(card.toString(), 'zoneA', 'zoneB'));
             }
         });
 
