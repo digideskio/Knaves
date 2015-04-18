@@ -1,5 +1,5 @@
 
-var knavesevents = {};
+knavesevents = {};
 
 knavesevents.CardEnterPlayEvent = function(card, cardId, zoneId) {
     this.card = card;

@@ -16,10 +16,11 @@ KnavesUI = function(canvasElement, cardViewFactory) {
     this.zoneViews = {};
 };
 
-KnavesUI.prototype.createZone = function(zoneId) {
+KnavesUI.prototype.createZone = function(zoneElementId, zone) {
     var zoneElement = document.createElement("div");
-    zoneElement.id = zoneId;
-    this.zoneViews[zoneId] = zoneElement;
+    zoneElement.id = zoneElementId;
+    zoneElement.className = zone.zoneElementCSS;
+    this.zoneViews[zoneElementId] = zoneElement;
 
     this.canvasElement.appendChild(zoneElement);
 };
