@@ -1,0 +1,17 @@
+
+.playing-card {
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    width: 100px;
+    height: 180px;
+}
+
+#zoneA {
+    background-color: blue;
+}
+#zoneB {
+    background-color: green;
+}

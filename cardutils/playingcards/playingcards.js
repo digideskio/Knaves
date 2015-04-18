@@ -61,5 +61,5 @@ playingcards = {
 };
 
 playingcards.Card.prototype.toString = function() {
-    return this.rank.name + " of " + this.suit;
+    return this.rank.name + " of " + this.suit.name;
 };

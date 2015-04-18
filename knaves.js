@@ -18,6 +18,7 @@ KnavesUI = function(canvasElement, cardViewFactory) {
 
 KnavesUI.prototype.createZone = function(zoneId) {
     var zoneElement = document.createElement("div");
+    zoneElement.id = zoneId;
     this.zoneViews[zoneId] = zoneElement;
 
     this.canvasElement.appendChild(zoneElement);
