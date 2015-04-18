@@ -1,5 +1,5 @@
 
-KnavesUI = function(canvasElement, cardDimensions, cardViewFactory) {
+KnavesUI = function(canvasElement, cardDimensions, cardViewFactory, zoneViewFactory) {
     this.canvasElement = canvasElement;
     canvasElement.style.position = 'relative';
 
@@ -15,6 +15,11 @@ KnavesUI = function(canvasElement, cardDimensions, cardViewFactory) {
     this.cardViewFactory = cardViewFactory;
 
     /**
+     * Function which returns a DOM element for a given zone object
+     */
+    this.zoneViewFactory = zoneViewFactory;
+
+    /**
      * A map from card ids to the card's visual element
      */
     this.cardViews = {};
@@ -26,13 +31,18 @@ KnavesUI = function(canvasElement, cardDimensions, cardViewFactory) {
 };
 
 KnavesUI.prototype.createZone = function(zoneElementId, zone) {
-    var zoneElement = document.createElement("div");
-    zoneElement.style.position = 'absolute';
-    DOMUtils.addTransform(zoneElement, 'translate(' + zone.x + 'px, ' + zone.y + 'px)');
+    zone.cardDimensions = this.cardDimensions;
+
+    var zoneElement = this.zoneViewFactory(zone);
     zoneElement.id = zoneElementId;
 
     zone.element = zoneElement;
     this.zones[zoneElementId] = zone;
+
+    zoneElement.style.position = 'absolute';
+    zoneElement.style.width = this.cardDimensions.width + 'px';
+    zoneElement.style.height = this.cardDimensions.height + 'px';
+    DOMUtils.addTransform(zoneElement, 'translate(' + zone.x + 'px, ' + zone.y + 'px)');
 
     this.canvasElement.appendChild(zoneElement);
 };

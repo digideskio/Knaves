@@ -2,15 +2,24 @@
 zones = {};
 
 var performLayout = function() {
+    var width = this.cardDimensions.width;
+    var height = this.cardDimensions.height;
+
     for (var i = 0; i<this.children.length; ++i) {
         var cardElement = this.children[i];
         var position = this.getPosition(i);
+        width = this.cardDimensions.width + position.x;
+        height = this.cardDimensions.height + position.y;
+
         var transform = 'translate('
             + (position.x + this.x)+ 'px, '
             + (position.y + this.y) + 'px)';
 
         DOMUtils.addTransform(cardElement, transform);
     }
+
+    this.element.style.width = width + 'px';
+    this.element.style.height = height + 'px';
 };
 
 var addCardElement = function(cardElement) {
