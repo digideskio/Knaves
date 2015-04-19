@@ -72,6 +72,8 @@ KnavesUI.prototype.processEvent = function(event) {
         this.changeZones(event);
     } else if (event.type === 'CARD_TAP') {
         this.tap(event);
+    } else if (event.type === 'CARD_UNTAP') {
+        this.untap(event);
     } else {
         console.log('KnavesUI processing an unknown event type');
     }
@@ -114,7 +116,15 @@ KnavesUI.prototype.tap = function(change) {
     var cardView = this.getCardView(change.cardId);
     cardView.isTapped = true;
 
-    // Physically rotate the card
+    var zone = this.zones[cardView.zoneId];
+    zone.performLayout();
+};
+
+KnavesUI.prototype.untap = function(change) {
+    console.log(change.cardId + ' untaps');
+
+    var cardView = this.getCardView(change.cardId);
+    cardView.isTapped = false;
 
     var zone = this.zones[cardView.zoneId];
     zone.performLayout();
