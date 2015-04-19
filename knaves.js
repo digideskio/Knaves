@@ -30,20 +30,20 @@ KnavesUI = function(canvasElement, cardDimensions, cardViewFactory, zoneViewFact
     this.zones = {};
 };
 
-KnavesUI.prototype.createZone = function(zoneElementId, zone) {
-    zone.cardDimensions = this.cardDimensions;
+KnavesUI.prototype.createZone = function(zoneId, zone) {
+    if (this.zones[zoneId])
+        throw new Error('Tried to create zone with duplicate id: ' + zoneId);
+    this.zones[zoneId] = zone;
 
     var zoneElement = this.zoneViewFactory(zone);
-    zoneElement.id = zoneElementId;
-
-    zone.element = zoneElement;
-    this.zones[zoneElementId] = zone;
-
+    zoneElement.id = zoneId;
     zoneElement.style.position = 'absolute';
-    zone.performLayout();
     DOMUtils.addTransform(zoneElement, 'translate(' + zone.x + 'px, ' + zone.y + 'px)');
-
     this.canvasElement.appendChild(zoneElement);
+
+    zone.cardDimensions = this.cardDimensions;
+    zone.element = zoneElement;
+    zone.performLayout();
 };
 
 KnavesUI.prototype.createCardView = function(cardId, card) {
@@ -75,10 +75,16 @@ KnavesUI.prototype.processEvent = function(event) {
     } else if (event.type === 'CARD_UNTAP') {
         this.untap(event);
     } else {
-        console.log('KnavesUI processing an unknown event type');
+        throw new Error('KnavesUI processed an unknown event type: ' + event.type);
     }
 };
 
+/**
+ * Process a CardEnterPlayEvent
+ *
+ * Creates the ui element for the new card by calling the factory function,
+ * then adds that card to the canvas and to the zone into which it enters play.
+ */
 KnavesUI.prototype.enterPlay = function(enterPlay) {
     console.log(enterPlay.cardId + ' enters play in zone ' + enterPlay.zoneId);
 
@@ -94,36 +100,58 @@ KnavesUI.prototype.enterPlay = function(enterPlay) {
     zone.addCardElement(cardView);
 };
 
-KnavesUI.prototype.changeZones = function(change) {
-    console.log(change.cardId + ' moves from ' + change.fromZoneId + ' to ' + change.toZoneId);
+/**
+ * Process a CardChangeZones event
+ *
+ * Removes the card from the old zone, adds it to the new zone.
+ * Both zones are then re-rendered.
+ */
+KnavesUI.prototype.changeZones = function(changeEvent) {
+    console.log(changeEvent.cardId + ' moves from ' + changeEvent.fromZoneId + ' to ' + changeEvent.toZoneId);
 
     // Find the view associated with this card id
-    var cardView = this.getCardView(change.cardId);
-    cardView.zoneId = change.toZoneId;
+    var cardView = this.getCardView(changeEvent.cardId);
+    cardView.zoneId = changeEvent.toZoneId;
 
     // Remove it from the old zone
-    var oldZone = this.zones[change.fromZoneId];
+    var oldZone = this.zones[changeEvent.fromZoneId];
+    if (!oldZone)
+        throw new Error('Tried to remove card from nonexistent zone: ' + changeEvent.fromZoneId);
     oldZone.removeCardElement(cardView);
 
-    // add it to the new zone
-    var newZone = this.zones[change.toZoneId];
+    // Add it to the new zone
+    var newZone = this.zones[changeEvent.toZoneId];
+    if (!newZone)
+        throw new Error('Tried to move card to nonexistent zone: ' + changeEvent.toZoneId);
     newZone.addCardElement(cardView);
 };
 
-KnavesUI.prototype.tap = function(change) {
-    console.log(change.cardId + ' taps');
+/**
+ * Process a CardTap event
+ *
+ * Mark's the card view's isTapped to true and causes the card's zone
+ * to re-render.
+ */
+KnavesUI.prototype.tap = function(tapEvent) {
+    console.log(tapEvent.cardId + ' taps');
 
-    var cardView = this.getCardView(change.cardId);
+    var cardView = this.getCardView(tapEvent.cardId);
     cardView.isTapped = true;
 
     var zone = this.zones[cardView.zoneId];
     zone.performLayout();
 };
 
-KnavesUI.prototype.untap = function(change) {
-    console.log(change.cardId + ' untaps');
+/**
+ * Process a CardUntap event
+ *
+ * Mark's the card view's isTapped to false and causes the card's zone
+ * to re-render.
+ */
+KnavesUI.prototype.untap = function(uptapEvent) {
+    console.log(uptapEvent.cardId + ' untaps');
 
-    var cardView = this.getCardView(change.cardId);
+    var cardView = this.getCardView(uptapEvent.cardId);
     cardView.isTapped = false;
 
     var zone = this.zones[cardView.zoneId];
