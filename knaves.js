@@ -52,8 +52,8 @@ KnavesUI.prototype.createCardView = function(cardId, card) {
     cardElement.style.position = 'absolute';
 
     var cardView = {
-        faceDown: false,
-        tapped: false,
+        isFaceDown: false,
+        isTapped: false,
         element: cardElement
     };
 
@@ -70,6 +70,8 @@ KnavesUI.prototype.processEvent = function(event) {
         this.enterPlay(event);
     } else if (event.type === 'CARD_CHANGE_ZONES') {
         this.changeZones(event);
+    } else if (event.type === 'CARD_TAP') {
+        this.tap(event);
     } else {
         console.log('KnavesUI processing an unknown event type');
     }
@@ -86,6 +88,7 @@ KnavesUI.prototype.enterPlay = function(enterPlay) {
 
     // Put the card in the appropriate zone of play
     var zone = this.zones[enterPlay.zoneId];
+    cardView.zoneId = enterPlay.zoneId;
     zone.addCardElement(cardView);
 };
 
@@ -94,6 +97,7 @@ KnavesUI.prototype.changeZones = function(change) {
 
     // Find the view associated with this card id
     var cardView = this.getCardView(change.cardId);
+    cardView.zoneId = change.toZoneId;
 
     // Remove it from the old zone
     var oldZone = this.zones[change.fromZoneId];
@@ -102,4 +106,16 @@ KnavesUI.prototype.changeZones = function(change) {
     // add it to the new zone
     var newZone = this.zones[change.toZoneId];
     newZone.addCardElement(cardView);
-}
+};
+
+KnavesUI.prototype.tap = function(change) {
+    console.log(change.cardId + ' taps');
+
+    var cardView = this.getCardView(change.cardId);
+    cardView.isTapped = true;
+
+    // Physically rotate the card
+
+    var zone = this.zones[cardView.zoneId];
+    zone.performLayout();
+};

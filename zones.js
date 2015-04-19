@@ -8,36 +8,47 @@ var performLayout = function() {
     var x = xMargin;
     var y = yMargin;
 
-    var width = this.cardDimensions.width;
-    var height = this.cardDimensions.height;
+    var maximumX = this.cardDimensions.width;
+    var maximumY = this.cardDimensions.height;
 
     for (var i = 0; i<this.children.length; ++i) {
         var cardView = this.children[i];
 
-        var cardWidth = this.cardDimensions.width; // TODO depends on if it's tapped
-        var cardHeight = this.cardDimensions.height; // TODO depends on if it's tapped
+        // Dimensions of the card based on orientation
+        var cardWidth = cardView.isTapped ? this.cardDimensions.height : this.cardDimensions.width;
+        var cardHeight = cardView.isTapped ? this.cardDimensions.width : this.cardDimensions.height;
 
-        var transform = 'translate('
-            + (x + this.x)+ 'px, '
-            + (y + this.y) + 'px)';
+        maximumX = Math.max(maximumX, x + cardWidth);
+        maximumY = Math.max(maximumY, y + cardWidth);
 
-        if (i<this.children.length-1) {
-            x += this.xSpacing;
-            width += this.xSpacing;
-            if (!this.xOverlap) {
-                x += cardWidth;
-                width += cardWidth;
-            }
-
-            y += this.ySpacing;
-            height += this.ySpacing;
+        if (cardView.isTapped) {
+            /* TODO - this is a terrible approximation of how to offset for the rotation
+             * and needs to be developed further
+             */
+            var transform = 'translate('
+                + (x + this.x + cardWidth/4)+ 'px, '
+                + (y + this.y - cardHeight/4) + 'px)'
+                + ' rotate(90deg)';
+            DOMUtils.addTransform(cardView.element, transform);
+        } else {
+            var transform = 'translate('
+                + (x + this.x)+ 'px, '
+                + (y + this.y) + 'px)';
+            DOMUtils.addTransform(cardView.element, transform);
         }
 
-        DOMUtils.addTransform(cardView.element, transform);
+        x += this.xSpacing;
+        if (!this.xOverlap) {
+            x += cardWidth;
+        }
+
+        y += this.ySpacing;
     }
 
-    this.element.style.width = width + 2*xMargin + 'px';
-    this.element.style.height = height + 2*yMargin + 'px';
+    if (this.dynamicSize) {
+        this.element.style.width = (maximumX + xMargin) + 'px';
+        this.element.style.height = (maximumY + yMargin) + 'px';
+    }
 };
 
 var addCardElement = function(cardView) {

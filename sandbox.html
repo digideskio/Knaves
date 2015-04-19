@@ -53,6 +53,9 @@
             for (var i = 0; i<3; ++i) {
                 var card = hand.pop();
                 knavesUI.processEvent(new knavesevents.CardChangeZones(card.toString(), 'zoneA', 'zoneB'));
+
+                if (Math.random() > 0.5)
+                    knavesUI.processEvent(new knavesevents.CardTap(card.toString()));
             }
         });
 

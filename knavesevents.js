@@ -14,3 +14,13 @@ knavesevents.CardChangeZones = function(cardId, fromZoneId, toZoneId) {
     this.toZoneId = toZoneId;
     this.type = 'CARD_CHANGE_ZONES';
 };
+
+knavesevents.CardTap = function(cardId) {
+    this.cardId = cardId;
+    this.type = 'CARD_TAP';
+};
+
+knavesevents.CardUntap = function(cardId) {
+    this.cardId = cardId;
+    this.type = 'CARD_UNTAP';
+};
